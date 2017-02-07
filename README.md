@@ -1,5 +1,5 @@
 # Ukkonen-Suffix-Tree
-##Java implementation of Ukkonen's Suffix Tree Algorithm
+####Java implementation of Ukkonen's Suffix Tree Algorithm
 
 ##Rules
 ###Rule One:
@@ -35,5 +35,5 @@
 ###Walk Down (WD):
   Transform ActivePoint variables to synonymous ActivePoint of smaller length while walking down the tree. Such as from root node to inner node.
 
-###Extension Rule 3:
+###Extension Rule 3 (ER3):
   Increment activeLength.
