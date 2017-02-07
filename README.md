@@ -29,7 +29,7 @@
   If activeNode is root and activeLength is greater than 0, decrement activeLength, activeEdge = phase – remainingSuffixCount + 1
   ActiveLength gets closer to root after every extension, so decrementing helps point to same index. ActiveEdge is changed to point to next character that needs to be added.
 
-###Extension Rule 2 Change 2 (ER2C1):
+###Extension Rule 2 Change 2 (ER2C2):
   If activeNode is not root, make activeNode the previous activeNode’s suffixLink.
 
 ###Walk Down (WD):
