@@ -60,11 +60,11 @@ public class Ukkonen {
     remainingSuffixCount++;
     internalNode = null;
     while(remainingSuffixCount > 0) {
-      // APCFALZ: ActivePoint Change for Active Length Zero
+      // ALZ: ActivePoint Change for Active Length Zero
       // At the start of extension, when activeLength is zero, activeEdge 
       // is set to the current character being processed
       if (activeLength == 0) {
-        if (DETAILED) System.out.println("APCFALZ");
+        if (DETAILED) System.out.println("ALZ");
         activeEdge = index;
         if (DETAILED) printActivePoint();
       }
@@ -101,8 +101,8 @@ public class Ukkonen {
             internalNode = null;
           }
 
-          // APCFER3: ActivePoint Change For Extension Rule 3
-          if (DETAILED) System.out.println("APCFER3");
+          // ER3: ActivePoint Change For Extension Rule 3
+          if (DETAILED) System.out.println("ER3");
           activeLength++;
           if (DETAILED) printActivePoint();
 
@@ -134,14 +134,14 @@ public class Ukkonen {
 
       remainingSuffixCount--;
 
-      // APCFER2C1: ActivePoint Change For Extension Rule 2 Change 1
+      // ER2C1: ActivePoint Change For Extension Rule 2 Change 1
       if (activeNode == root && activeLength > 0) {
-        if (DETAILED) System.out.println("APCFER2C1");
+        if (DETAILED) System.out.println("ER2C1");
         activeLength--;
         activeEdge = index - remainingSuffixCount + 1;
         if (DETAILED) printActivePoint();
-      } else if (activeNode != root) { // APCFER2C2
-        if (DETAILED) System.out.println("APCFER2C2");
+      } else if (activeNode != root) { // ER2C2
+        if (DETAILED) System.out.println("ER2C2");
         activeNode = activeNode.suffixLink;
         if (DETAILED) printActivePoint();
       }
@@ -150,12 +150,12 @@ public class Ukkonen {
 
   // If activeLength < edgeLength, no walk down needed.
   private boolean walkedDown(Node n) {
-    // APCFWD: ActivePoint Change For Walk Down
+    // WD: ActivePoint Change For Walk Down
     // Transform ActivePoint variables to synonymous ActivePoint of 
     // smaller length while walking down the tree. Such as from root node
     // to inner node.
     if (activeLength >= edgeLength(n)) {
-      if (DETAILED) System.out.println("APCFWD");
+      if (DETAILED) System.out.println("WD");
       activeNode = n;
       activeEdge += edgeLength(n);
       activeLength -= edgeLength(n);
