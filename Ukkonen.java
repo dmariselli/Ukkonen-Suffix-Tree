@@ -52,8 +52,10 @@ public class Ukkonen {
 
   // Used when running offline
   private void processIndex(int index) {
+    // Rule One: if leaf, append latest character.
     // Trick Three: Update end value of all leaf edges by updating
     // the global end variable.
+    if (DETAILED) System.out.println("Rule One/Trick Three");
     leafEnd = index;
     remainingSuffixCount++;
     internalNode = null;
@@ -62,14 +64,18 @@ public class Ukkonen {
       // At the start of extension, when activeLength is zero, activeEdge 
       // is set to the current character being processed
       if (activeLength == 0) {
+        if (DETAILED) System.out.println("APCFALZ");
         activeEdge = index;
+        if (DETAILED) printActivePoint();
       }
 
       if (!activeNode.edgeMap.containsKey(phrase.charAt(activeEdge))) {
         // Rule Two: Creates a new leaf edge if not seen before
+        if (DETAILED) System.out.println("Rule Two: new leaf");
         activeNode.edgeMap.put(phrase.charAt(activeEdge), new Node(index));
 
         if (internalNode != null) {
+          if (DETAILED) System.out.println("Set up suffixLink from last internal node to activeNode");
           internalNode.suffixLink = activeNode;
           internalNode = null;
         }
@@ -80,6 +86,7 @@ public class Ukkonen {
 
         // Trick One: Skip/Count. Using ActivePoint to save time on the
         // walk down. 
+        if (DETAILED) System.out.println("Trick One: Skip/Count");
         if (walkedDown(next)) {
           continue;
         }
@@ -87,21 +94,26 @@ public class Ukkonen {
         // Rule Three: ends the current phase (when current character is 
         // found in current edge being traversed)
         if (phrase.charAt(next.start+activeLength) == phrase.charAt(index)) {
-          
+          if (DETAILED) System.out.println("Rule Three");
           if (internalNode != null && activeNode != root) {
+            // if (DETAILED) System.out.println("Set up suffixLink from last internal node to previous internal node");
             internalNode.suffixLink = activeNode;
             internalNode = null;
           }
 
           // APCFER3: ActivePoint Change For Extension Rule 3
+          if (DETAILED) System.out.println("APCFER3");
           activeLength++;
+          if (DETAILED) printActivePoint();
 
           // Trick Two: Stop the processing of any phase as soon as rule 3 applies. 
           // All further extensions are already present in tree implicitly. 
+          if (DETAILED) System.out.println("Trick Two");
           break;
         }
 
         // Rule Two: suffix only partially matches edge. Inner edge must be created.
+        if (DETAILED) System.out.println("Rule Two: Split Node");
         int splitEnd = next.start + activeLength - 1;
         Node split = new Node(next.start, splitEnd);
         // replace existing pointer to new inner node.
@@ -114,6 +126,7 @@ public class Ukkonen {
         split.edgeMap.put(phrase.charAt(next.start), next);
 
         if (internalNode != null) {
+          if (DETAILED) System.out.println("Set up suffixLink from last internal node to this newly created one");
           internalNode.suffixLink = split;
         }
         internalNode = split;
@@ -123,10 +136,14 @@ public class Ukkonen {
 
       // APCFER2C1: ActivePoint Change For Extension Rule 2 Change 1
       if (activeNode == root && activeLength > 0) {
+        if (DETAILED) System.out.println("APCFER2C1");
         activeLength--;
         activeEdge = index - remainingSuffixCount + 1;
+        if (DETAILED) printActivePoint();
       } else if (activeNode != root) { // APCFER2C2
+        if (DETAILED) System.out.println("APCFER2C2");
         activeNode = activeNode.suffixLink;
+        if (DETAILED) printActivePoint();
       }
     }
   }
@@ -138,9 +155,11 @@ public class Ukkonen {
     // smaller length while walking down the tree. Such as from root node
     // to inner node.
     if (activeLength >= edgeLength(n)) {
+      if (DETAILED) System.out.println("APCFWD");
       activeNode = n;
       activeEdge += edgeLength(n);
       activeLength -= edgeLength(n);
+      if (DETAILED) printActivePoint();
       return true;
     }
 
@@ -212,21 +231,25 @@ public class Ukkonen {
 
   }
 
+  private void printActivePoint() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("ActivePoint is (");
+    if (activeNode.start == -1) {
+      sb.append("root, ");
+    } else {
+      sb.append(phrase.substring(activeNode.start, activeNode.start+1));
+      sb.append(", ");
+    }
+    sb.append(phrase.substring(activeEdge, activeEdge+1));
+    sb.append(", ");
+    sb.append(activeLength).append(")");
+    System.out.println(sb.toString());
+  }
+
   public void printTree() {
     dfsSetAndPrint(root, 0);
     if (DETAILED) {
-      StringBuilder sb = new StringBuilder();
-      sb.append("ActivePoint is (");
-      if (activeNode.start == -1) {
-        sb.append("root, ");
-      } else {
-        sb.append(phrase.substring(activeNode.start, activeNode.start+1));
-        sb.append(", ");
-      }
-      sb.append(phrase.substring(activeEdge, activeEdge+1));
-      sb.append(", ");
-      sb.append(activeLength).append(")");
-      System.out.println(sb.toString());
+      printActivePoint();
     }
   }
 
