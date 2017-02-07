@@ -4,9 +4,12 @@ import java.util.Map.Entry;
 
 public class Ukkonen {
 
+  // set to true if each step should be printed out and detail about 
+  // active node should be printed. Increases runtime to O(n^2).
+  public static boolean DETAILED = true;
   // Unique ending character appended to end of string 
   // to ensure suffix tree is not implicit.
-  // public static char UNIQUE = '$';
+  public static char UNIQUE = '$';
   // String given (if running offline)
   private String phrase;
   // Root of the suffix tree.
@@ -35,15 +38,16 @@ public class Ukkonen {
   }
 
   public void processOffline(String str) {
+    if (str.indexOf(UNIQUE) != str.length()-1) {
+      throw new IllegalArgumentException("String must end in the unique character $");
+    }
     phrase = str;
     for (int i = 0; i < phrase.length(); i++) {
-      System.out.println("----------Step " + (i+1) + "-------------");
+      if (DETAILED) System.out.println("----------Step " + (i+1) + "-------------");
       processIndex(i);
-      // O(n)
-      printTree();
+      if (DETAILED) printTree();
     }
-    // process unique end character
-    // processChar(UNIQUE);
+    if(!DETAILED) printTree();
   }
 
   // Used when running offline
@@ -210,18 +214,20 @@ public class Ukkonen {
 
   public void printTree() {
     dfsSetAndPrint(root, 0);
-    StringBuilder sb = new StringBuilder();
-    sb.append("ActivePoint is (");
-    if (activeNode.start == -1) {
-      sb.append("root, ");
-    } else {
-      sb.append(phrase.substring(activeNode.start, activeNode.start+1));
+    if (DETAILED) {
+      StringBuilder sb = new StringBuilder();
+      sb.append("ActivePoint is (");
+      if (activeNode.start == -1) {
+        sb.append("root, ");
+      } else {
+        sb.append(phrase.substring(activeNode.start, activeNode.start+1));
+        sb.append(", ");
+      }
+      sb.append(phrase.substring(activeEdge, activeEdge+1));
       sb.append(", ");
+      sb.append(activeLength).append(")");
+      System.out.println(sb.toString());
     }
-    sb.append(phrase.substring(activeEdge, activeEdge+1));
-    sb.append(", ");
-    sb.append(activeLength).append(")");
-    System.out.println(sb.toString());
   }
 
 }
