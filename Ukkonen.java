@@ -37,7 +37,7 @@ public class Ukkonen {
     remainingSuffixCount = 0;
   }
 
-  public void processOffline(String str) {
+  public void process(String str) {
     if (str.indexOf(UNIQUE) != str.length()-1) {
       throw new IllegalArgumentException("String must end in the unique character $");
     }
