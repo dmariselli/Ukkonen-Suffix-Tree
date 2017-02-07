@@ -1,0 +1,5 @@
+#!/bin/bash
+
+javac Ukkonen.java
+javac SuffixTreeTester.java
+java SuffixTreeTester
